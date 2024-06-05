@@ -19,7 +19,7 @@ startup
 
 onStart
 {
-	vars.CompletedSplits.Clear();
+	vars.completedSplits.Clear();
 
 	// This makes sure the timer always starts at 0.00
 	timer.IsGameTimePaused = true;
@@ -33,7 +33,7 @@ init
 
 	vars.Helper["cantMove"] = vars.Helper.Make<bool>(gEngine, 0x1080, 0x38, 0x0, 0x30, 0x2E8, 0xB19);
 
-	vars.Helper["Level"] = vars.Helper.MakeString(gEngine, 0xB98, 0xC);
+	vars.Helper["Level"] = vars.Helper.MakeString(gEngine, 0xB98, 0x20);
 	vars.Helper["Level"].FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull;
 
 	vars.Helper["localPlayer"] = vars.Helper.Make<long>(gWorld, 0x1B8, 0x38, 0x0, 0x30);
@@ -118,7 +118,7 @@ update
 
 start
 {
-	return current.Level == "0-0_Level/Map_A_01_Persistent" && !current.cantMove && old.cantMove;
+	return current.Level == "Map_A_01_Persistent" && !current.cantMove && old.cantMove;
 }
 
 split
@@ -127,10 +127,10 @@ split
 
 	if (current.Level != old.Level)
 	{
-		setting = "Map_" + current.Level;
+		setting = current.Level;
 	}
 
-	if (settings.ContainsKey(setting) && settings[setting] && vars.CompletedSplits.Add(setting))
+	if (settings.ContainsKey(setting) && settings[setting] && vars.completedSplits.Add(setting))
 	{
 		return true;
 	}
@@ -138,7 +138,7 @@ split
 
 isLoading
 {
-	return vars.GetObjectName((IntPtr)memory.ReadValue<ulong>((IntPtr)vars.ProgressBarPtr)) == "LoadingProgressBar" || current.Level == "0-0_Level/MainMenu";
+	return vars.GetObjectName((IntPtr)memory.ReadValue<ulong>((IntPtr)vars.ProgressBarPtr)) == "LoadingProgressBar" || current.Level == "MainMenu";
 	//return vars.GetObjectName((IntPtr)memory.ReadValue<ulong>((IntPtr)vars.ProgressBarPtr)) == "LoadingProgressBar" &&
 		//memory.ReadValue<float>((IntPtr)memory.ReadValue<ulong>((IntPtr)(vars.ProgressBarPtr)) + 0x410) != 1;
 }
