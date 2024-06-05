@@ -6,5 +6,8 @@
 	<Setting Id="Map_0-0_Level/Map_A_06_Persistent" Label="Complete Adventure 3" State="false" />
 	<Setting Id="Map_0-0_Level/Map_A_07_Persistent" Label="Complete Adventure 4" State="false" />
 	<Setting Id="Map_0-0_Level/Map_A_08_Persistent" Label="Complete Adventure 5" State="false" />
+	<Setting Id="Map_0-0_Level/Map_A_09_Persistent" Label="Complete Adventure 6" State="false" />
+	<Setting Id="Map_0-0_Level/Map_A_10_Persistent" Label="Complete Adventure 7" State="false" />
+	<Setting Id="Map_0-0_Level/Map_A_11_Persistent" Label="Complete Adventure 8" State="false" />
   </Setting>
 </Settings>
