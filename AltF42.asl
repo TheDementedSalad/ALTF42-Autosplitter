@@ -1,6 +1,3 @@
-// Made by Nikoehart & TheDementedSalad
-// Big shoutouts to the Ero for assistance within the Items logic and splitting
-// Shoutouts to Rumii & Hntd for their assistance within for all the efforts of finding some of the values needed 
 state("ALTF42-Win64-Shipping") {}
 
 startup
