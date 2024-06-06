@@ -118,7 +118,7 @@ update
 
 start
 {
-	return current.Level == "Map_A_01_Persistent" && !current.cantMove && old.cantMove;
+	return (current.Level == "Map_A_01_Persistent" || current.Level == "Map_A_03_Persistent") && !current.cantMove && old.cantMove;
 }
 
 split
