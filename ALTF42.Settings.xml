@@ -1,6 +1,6 @@
 <Settings>
   <Setting Label="Map Splits">
-    <Setting Id="Map_A_03_Persistent" Label="Complete Tutorial Adventure" State="false" />
+	<Setting Id="Map_A_03_Persistent" Label="Complete Intro Adventure" State="false" />
 	<Setting Id="Map_A_04_Persistent" Label="Complete Adventure 1" State="false" />
 	<Setting Id="Map_A_05_Persistent" Label="Complete Adventure 2" State="false" />
 	<Setting Id="Map_A_06_Persistent" Label="Complete Adventure 3" State="false" />
