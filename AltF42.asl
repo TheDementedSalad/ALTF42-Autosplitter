@@ -3,7 +3,7 @@
 //By TheDementedSalad & Rumii
 //Special thanks to Rumii for doing the code injection to get the loading progress bar
 
-state("ALTF42-Win64-Shipping"){ }
+state("ALTF42-Win64-Shipping"){}
 
 startup
 {
@@ -31,7 +31,7 @@ init
 	IntPtr gEngine = vars.Helper.ScanRel(3, "48 89 05 ???????? 48 85 c9 74 ?? e8 ???????? 48 8d 4d");
 	vars.FNames = vars.Helper.ScanRel(25, "66 0F 7F 44 24 20 E8 ???????? EB ?? 80 3D ???????? 00");
 
-	vars.Helper["cantMove"] = vars.Helper.Make<bool>(gEngine, 0x1080, 0x38, 0x0, 0x30, 0x2E8, 0xB1F);
+	vars.Helper["cantMove"] = vars.Helper.Make<bool>(gEngine, 0x1080, 0x38, 0x0, 0x30, 0x2E8, 0xB19);
 
 	vars.Helper["Level"] = vars.Helper.MakeString(gEngine, 0xB98, 0x20);
 	vars.Helper["Level"].FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull;
@@ -59,19 +59,19 @@ init
 		else return "";
 	});
 
-	vars.ProgressBarPtr = 0; ulong allocated = 0; byte[] longJump = { 0xFF, 0x25, 0x00, 0x00, 0x00, 0x00 };
+	vars.ProgressBarPtr = 0;
 	ulong updateProgressBar = (ulong)vars.Helper.Scan(-0x1F, "C6 44 24 24 01 0F 11 44 24 30 48 8D 54 24 20 48 89 44 24");
 	if (updateProgressBar != 0)
 	{
+		byte[] longJump = { 0xFF, 0x25, 0x00, 0x00, 0x00, 0x00 };
 		byte[] goodBytes = { 0xF3, 0x0F, 0x11, 0x81, 0x10, 0x04, 0x00, 0x00, 0x48, 0x8B, 0x89, 0x58, 0x04, 0x00, 0x00 };
 		byte[] foundBytes = memory.ReadBytes((IntPtr)updateProgressBar, goodBytes.Length);
 
-		// numero uno
 		if (foundBytes.Length == goodBytes.Length)
 		{
 			if (goodBytes.SequenceEqual(foundBytes))
 			{
-				allocated = (ulong)memory.AllocateMemory(0x1000);
+				ulong allocated = (ulong)memory.AllocateMemory(0x1000);
 
 				if (allocated != 0)
 				{
@@ -99,36 +99,6 @@ init
 				if (couldBeJump.SequenceEqual(longJump))
 				{
 					vars.ProgressBarPtr = memory.ReadValue<ulong>((IntPtr)updateProgressBar + longJump.Length, 8) + 0x100;
-					allocated = vars.ProgressBarPtr - 0x100;
-				}
-			}
-
-			// numero dos
-			if (allocated != 0)
-            {
-				allocated += 0x200;
-				ulong updateData = (ulong)vars.Helper.Scan(23, "48 8D 54 24 30 48 8B CE E8 ?? ?? ?? ?? B2 01 49 8B CE E8");
-				if (updateData != 0)
-                {
-					byte[] goodBytes2 = { 0x41, 0xC6, 0x86, 0xA9, 0x03, 0x00, 0x00, 0x00, 0x49, 0x8B, 0xCE, 0x41, 0x80, 0x7F, 0x08, 0x00 };
-					byte[] foundBytes2 = memory.ReadBytes((IntPtr)updateData, goodBytes2.Length);
-
-					if (goodBytes2.SequenceEqual(foundBytes2))
-					{
-						byte[] s1 = { 0xFF, 0x25, 0x00, 0x00, 0x00, 0x00 };
-						byte[] s2 = BitConverter.GetBytes((ulong)allocated);
-						byte[] s3 = { 0x90, 0x90 };
-						byte[] start = s1.Concat(s2).Concat(s3).ToArray();
-
-						byte[] e1 = { 0x75, 0x0F, 0x51, 0x90, 0x48, 0x31, 0xC9, 0x90, 0x48, 0x89, 0x0D, 0xF1, 0xFE, 0xFF, 0xFF, 0x59, 0x90 };
-						byte[] e2 = goodBytes2;
-						byte[] e3 = { 0xFF, 0x25, 0x00, 0x00, 0x00, 0x00 };
-						byte[] e4 = BitConverter.GetBytes((ulong)updateData + (ulong)start.Length);
-						byte[] end = e1.Concat(e2).Concat(e3).Concat(e4).ToArray();
-
-						memory.WriteBytes((IntPtr)allocated, end);
-						memory.WriteBytes((IntPtr)updateData, start);
-					}
 				}
 			}
 		}
@@ -168,9 +138,9 @@ split
 
 isLoading
 {
-	return memory.ReadValue<ulong>((IntPtr)vars.ProgressBarPtr) != 0 || current.Level == "MainMenu";
+	return vars.GetObjectName((IntPtr)memory.ReadValue<ulong>((IntPtr)vars.ProgressBarPtr)) == "LoadingProgressBar" || current.Level == "MainMenu";
 	//return vars.GetObjectName((IntPtr)memory.ReadValue<ulong>((IntPtr)vars.ProgressBarPtr)) == "LoadingProgressBar" &&
-	//memory.ReadValue<float>((IntPtr)memory.ReadValue<ulong>((IntPtr)(vars.ProgressBarPtr)) + 0x410) != 1;
+		//memory.ReadValue<float>((IntPtr)memory.ReadValue<ulong>((IntPtr)(vars.ProgressBarPtr)) + 0x410) != 1;
 }
 
 reset
