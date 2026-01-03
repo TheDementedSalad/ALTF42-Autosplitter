@@ -74,7 +74,7 @@ update
 		vars.LoadingStatus = 2;
 	}
 	
-	if (vars.LoadingStatus == 2 && current.EndLoading != 0 && current.EndLoading > old.EndLoading)
+	if (vars.LoadingStatus == 2 && old.EndLoading > 0 && current.EndLoading > old.EndLoading)
 	{
 		//vars.Log("DISABLED");
 		vars.LoadingStatus = 0;
